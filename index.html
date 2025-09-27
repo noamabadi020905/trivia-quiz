@@ -1,16 +1,30 @@
-<!DOCTYPE html>
-<html lang="he">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>משחק טריוויה</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body dir="rtl">
-  <div id="app"></div>
-  <!-- נטען קודם את השאלות -->
-  <script src="questions.js"></script>
-  <!-- ואז את הקוד שמריץ את המשחק -->
-  <script src="script.js"></script>
-</body>
-</html>
+<div id="app">
+  <h1>משחק טריוויה</h1>
+
+  <!-- Progress Bar -->
+  <div id="progress-container">
+    <div id="progress-bar"></div>
+  </div>
+
+  <div id="quiz">
+    <div id="question"></div>
+    <div class="answers" id="answers"></div>
+    <button id="next" class="normal">הבא</button>
+  </div>
+
+  <div id="result" style="display:none;">
+    <h2>סיכום המשחק</h2>
+    <p id="score"></p>
+    <table id="wrong-answers">
+      <thead>
+        <tr>
+          <th>שאלה</th>
+          <th>תשובתך</th>
+          <th>תשובה נכונה</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <button id="play-again" class="normal">שחק שוב</button>
+  </div>
+</div>
