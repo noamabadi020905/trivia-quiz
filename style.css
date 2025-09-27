@@ -62,6 +62,11 @@ button.wrong {
   margin: 20px 0;
 }
 
+.hidden {
+  display: none;
+}
+
+/* צבעים לחלקים */
 .part-btn-1 { background-color: #ff5733; border-color: #ff5733; color: #fff; }
 .part-btn-2 { background-color: #33c1ff; border-color: #33c1ff; color: #fff; }
 .part-btn-3 { background-color: #ff33e3; border-color: #ff33e3; color: #fff; }

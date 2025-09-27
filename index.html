@@ -8,17 +8,18 @@
 </head>
 <body>
   <div id="menu">
-    <h1>ברוכים הבאים לטריוויה הכי טובה בעולם!</h1>
+    <h1>ברוכים הבאים לטריוויה!</h1>
+    <p>בחרו חלק לשחק או טריוויה מכל החלקים:</p>
     <div id="parts-buttons"></div>
-    <button id="all-parts-btn">טריוויה מכל החלקים</button>
+    <button id="all-parts-btn" class="part-btn-all">טריוויה מכל החלקים</button>
   </div>
 
-  <div id="quiz" style="display:none;">
+  <div id="quiz" class="hidden">
     <h2 id="question-text"></h2>
     <div id="options"></div>
   </div>
 
-  <div id="summary" style="display:none;">
+  <div id="summary" class="hidden">
     <h2>סיום הטריוויה!</h2>
     <div id="wrong-answers"></div>
     <button id="play-again-btn">שחק שוב</button>
