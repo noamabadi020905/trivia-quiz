@@ -4,7 +4,6 @@ const menuDiv = document.getElementById("menu");
 const quizDiv = document.getElementById("quiz");
 const questionText = document.getElementById("question-text");
 const optionsDiv = document.getElementById("options");
-const retryBtn = document.getElementById("retry-btn");
 const summaryDiv = document.getElementById("summary");
 const wrongAnswersDiv = document.getElementById("wrong-answers");
 const playAgainBtn = document.getElementById("play-again-btn");
@@ -16,6 +15,8 @@ let wrongAnswers = [];
 function startQuiz(part) {
   menuDiv.classList.add("hidden");
   quizDiv.classList.remove("hidden");
+  summaryDiv.classList.add("hidden");
+
   wrongAnswers = [];
   currentIndex = 0;
 
@@ -33,42 +34,34 @@ function startQuiz(part) {
 }
 
 function showQuestion() {
-  retryBtn.classList.add("hidden");
   const q = quizQuestions[currentIndex];
   questionText.textContent = q.q;
   optionsDiv.innerHTML = "";
+
   q.options.forEach(opt => {
     const btn = document.createElement("button");
     btn.textContent = opt;
-    btn.onclick = () => handleAnswer(opt);
+    btn.onclick = () => handleAnswer(opt, q, btn);
     optionsDiv.appendChild(btn);
   });
 }
 
-function handleAnswer(selected) {
-  const q = quizQuestions[currentIndex];
-  const buttons = optionsDiv.querySelectorAll("button");
-
-  buttons.forEach(btn => btn.disabled = true);
-
-  if (selected === q.a) {
-    buttons.forEach(btn => {
-      if (btn.textContent === selected) btn.classList.add("correct");
-    });
-    setTimeout(nextQuestion, 1000);
+function handleAnswer(selected, question, button) {
+  if (selected === question.a) {
+    button.classList.add("correct");
+    // Disable all buttons
+    optionsDiv.querySelectorAll("button").forEach(btn => btn.disabled = true);
+    setTimeout(nextQuestion, 800);
   } else {
-    buttons.forEach(btn => {
-      if (btn.textContent === selected) btn.classList.add("wrong");
-    });
-    retryBtn.classList.remove("hidden");
+    button.classList.add("wrong");
+    button.disabled = true;
+
+    // Record wrong answer only once
+    if (!wrongAnswers.includes(question)) wrongAnswers.push(question);
   }
 }
 
 function nextQuestion() {
-  const q = quizQuestions[currentIndex];
-  if (retryBtn.style.display !== "none") {
-    wrongAnswers.push(q);
-  }
   currentIndex++;
   if (currentIndex >= quizQuestions.length) {
     showSummary();
@@ -76,13 +69,6 @@ function nextQuestion() {
     showQuestion();
   }
 }
-
-retryBtn.onclick = () => {
-  retryBtn.classList.add("hidden");
-  const buttons = optionsDiv.querySelectorAll("button");
-  buttons.forEach(btn => btn.disabled = false);
-  buttons.forEach(btn => btn.classList.remove("wrong"));
-};
 
 function showSummary() {
   quizDiv.classList.add("hidden");
@@ -102,7 +88,7 @@ function showSummary() {
 
 playAgainBtn.onclick = () => location.reload();
 
-// Generate buttons for parts
+// Generate buttons for each part
 for (let key in questions) {
   const btn = document.createElement("button");
   btn.textContent = `חלק: ${key.replace("part_", "")}`;
