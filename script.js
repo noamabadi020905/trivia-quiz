@@ -1,64 +1,89 @@
-let current = 0;
-let correctCount = 0;
-let wrongCount = 0;
+let currentQuestion = 0;
+let correctAnswers = 0;
+let wrongAnswers = 0;
+let wrongDetails = []; // שאלות שענו עליהן לא נכון
 
-const quiz = document.getElementById("quiz");
-const progressBar = document.getElementById("progress-bar");
+const app = document.getElementById("app");
 
-function updateProgress() {
-  const percent = ((current) / questions.length) * 100;
-  progressBar.style.width = percent + "%";
-}
-
-function loadQuestion() {
-  quiz.innerHTML = "";
-  const q = questions[current];
-
-  updateProgress();
-
-  const qEl = document.createElement("div");
-  qEl.className = "question";
-  qEl.innerText = `שאלה ${current + 1} מתוך ${questions.length}: ${q.question}`;
-  quiz.appendChild(qEl);
-
-  q.options.forEach(option => {
-    const btn = document.createElement("button");
-    btn.className = "option";
-    btn.innerText = option;
-    btn.onclick = () => checkAnswer(btn, q.answer);
-    quiz.appendChild(btn);
-  });
-}
-
-function checkAnswer(button, correct) {
-  if (button.innerText === correct) {
-    button.classList.add("correct");
-    correctCount++;
-    setTimeout(() => {
-      current++;
-      if (current < questions.length) {
-        loadQuestion();
-      } else {
-        updateProgress(); // 100% בסוף
-        showSummary();
-      }
-    }, 800);
-  } else {
-    button.classList.add("wrong");
-    wrongCount++;
-    // אפשר לבחור שוב (לא מחליפים שאלה)
-  }
-}
-
-function showSummary() {
-  quiz.innerHTML = `
-    <div class="summary">
-      <h2>סיימת את הטריוויה! 🎉</h2>
-      <p>✅ תשובות נכונות: ${correctCount}</p>
-      <p>❌ תשובות שגויות: ${wrongCount}</p>
-    </div>
+function showQuestion() {
+  const q = questions[currentQuestion];
+  app.innerHTML = `
+    <h1>${q.question}</h1>
+    ${q.answers
+      .map(
+        (answer, i) =>
+          `<button class="normal" onclick="checkAnswer(${i})">${answer}</button>`
+      )
+      .join("")}
+    <p>שאלה ${currentQuestion + 1} מתוך ${questions.length}</p>
   `;
 }
 
-loadQuestion();
+function checkAnswer(i) {
+  const q = questions[currentQuestion];
+  const buttons = document.querySelectorAll("button");
 
+  if (i === q.correct) {
+    buttons[i].classList.remove("normal");
+    buttons[i].classList.add("correct");
+    correctAnswers++;
+    setTimeout(nextQuestion, 800);
+  } else {
+    buttons[i].classList.remove("normal");
+    buttons[i].classList.add("wrong");
+    wrongAnswers++;
+
+    if (!wrongDetails.find(w => w.index === currentQuestion)) {
+      wrongDetails.push({
+        index: currentQuestion,
+        question: q.question,
+        correctAnswer: q.answers[q.correct]
+      });
+    }
+  }
+}
+
+function nextQuestion() {
+  currentQuestion++;
+  if (currentQuestion < questions.length) {
+    showQuestion();
+  } else {
+    showResults();
+  }
+}
+
+function showResults() {
+  let tableHtml = "";
+  if (wrongDetails.length > 0) {
+    tableHtml = `
+      <h2>טעויות:</h2>
+      <table>
+        <tr><th>שאלה</th><th>תשובה נכונה</th></tr>
+        ${wrongDetails
+          .map(
+            w =>
+              `<tr><td>${w.question}</td><td>${w.correctAnswer}</td></tr>`
+          )
+          .join("")}
+      </table>
+    `;
+  }
+
+  app.innerHTML = `
+    <h1>המשחק הסתיים 🎉</h1>
+    <p class="result">✅ נכונות: ${correctAnswers}</p>
+    <p class="result">❌ שגויות: ${wrongAnswers}</p>
+    ${tableHtml}
+    <button class="normal" onclick="restartGame()">שחק שוב</button>
+  `;
+}
+
+function restartGame() {
+  currentQuestion = 0;
+  correctAnswers = 0;
+  wrongAnswers = 0;
+  wrongDetails = [];
+  showQuestion();
+}
+
+showQuestion();
