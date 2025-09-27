@@ -1,13 +1,33 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hebrew-trivia-app</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<!DOCTYPE html>
+<html lang="he">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>טריוויה בעברית</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <div id="menu">
+      <h1>ברוכים הבאים לטריוויה בעברית!</h1>
+      <div id="parts-buttons"></div>
+      <button id="all-parts-btn">טריוויה מכל החלקים</button>
+    </div>
+
+    <div id="quiz" class="hidden">
+      <h2 id="question-text"></h2>
+      <div id="options"></div>
+      <button id="retry-btn" class="hidden">נסה שוב</button>
+    </div>
+
+    <div id="summary" class="hidden">
+      <h2>סיום הטריוויה!</h2>
+      <div id="wrong-answers"></div>
+      <button id="play-again-btn">שחק שוב</button>
+    </div>
+  </div>
+
+  <script src="questions.js"></script>
+  <script src="script.js"></script>
+</body>
 </html>
