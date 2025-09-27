@@ -14,7 +14,9 @@ document.addEventListener("DOMContentLoaded", () => {
   let wrongAnswers = [];
 
   function startQuiz(part) {
+    // Hide menu (choose part)
     menuDiv.classList.add("hidden");
+
     quizDiv.classList.remove("hidden");
     summaryDiv.classList.add("hidden");
 
