@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let wrongAnswers = [];
 
   function shuffleArray(array) {
-    let shuffled = [...array];
+    const shuffled = [...array];
     for (let i = shuffled.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
@@ -35,10 +35,10 @@ document.addEventListener("DOMContentLoaded", () => {
       for (let key in questions) {
         quizQuestions = quizQuestions.concat(questions[key]);
       }
-      quizQuestions = shuffleArray(quizQuestions);
     } else {
-      quizQuestions = shuffleArray(questions[partKey]);
+      quizQuestions = [...questions[partKey]];
     }
+    quizQuestions = shuffleArray(quizQuestions);
 
     showQuestion();
   }
@@ -51,6 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const multiAnswer = q.a.length > 1;
 
     if (!multiAnswer) {
+      // שאלה עם תשובה אחת
       q.options.forEach(opt => {
         const btn = document.createElement("button");
         btn.textContent = opt;
@@ -58,6 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
         optionsDiv.appendChild(btn);
       });
     } else {
+      // שאלה עם תשובות מרובות
       q.options.forEach(opt => {
         const label = document.createElement("label");
         const input = document.createElement("input");
@@ -67,6 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
         label.appendChild(document.createTextNode(opt));
         optionsDiv.appendChild(label);
       });
+
       const checkBtn = document.createElement("button");
       checkBtn.textContent = "בדוק תשובות";
       checkBtn.onclick = () => checkMultiAnswer(q);
@@ -87,21 +90,26 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function checkMultiAnswer(question) {
-    const inputs = Array.from(optionsDiv.querySelectorAll("input:checked"));
-    const selected = inputs.map(i => i.value);
+    const inputs = Array.from(optionsDiv.querySelectorAll("input"));
+    const selected = inputs.filter(i => i.checked).map(i => i.value);
 
-    const labels = optionsDiv.querySelectorAll("label");
-    labels.forEach(label => {
-      const val = label.querySelector("input").value;
-      if (question.a.includes(val)) label.style.color = "green";
-      else if (selected.includes(val)) label.style.color = "red";
-      else label.style.color = "inherit";
+    // צבעים עבור כל תשובה
+    inputs.forEach(i => {
+      const label = i.parentElement;
+      if (question.a.includes(i.value)) {
+        if (i.checked) label.style.color = "green"; // בחר נכון
+        else label.style.color = "black"; // תשובה נכונה שלא בחר
+      } else {
+        if (i.checked) label.style.color = "red"; // בחר לא נכון
+        else label.style.color = "black"; // לא בחר נכון
+      }
     });
 
+    // בדיקה אם סימן את כל התשובות הנכונות בלבד
     if (arraysEqual(selected, question.a)) {
       setTimeout(nextQuestion, 1000);
     } else {
-      alert("טעית או חסר משהו, נסה שוב!");
+      alert("טעית או חסר לך משהו, נסה שוב!");
     }
   }
 
