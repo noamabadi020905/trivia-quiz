@@ -13,7 +13,6 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentIndex = 0;
   let wrongAnswers = [];
 
-  // --- פונקציית shuffle ---
   function shuffleArray(array) {
     let shuffled = [...array];
     for (let i = shuffled.length - 1; i > 0; i--) {
@@ -23,7 +22,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return shuffled;
   }
 
-  // --- התחלת המשחק לפי פרק ---
   function startQuiz(partKey) {
     menuDiv.classList.add("hidden");
     quizDiv.classList.remove("hidden");
@@ -45,16 +43,14 @@ document.addEventListener("DOMContentLoaded", () => {
     showQuestion();
   }
 
-  // --- הצגת שאלה ---
   function showQuestion() {
     const q = quizQuestions[currentIndex];
     questionText.textContent = q.q;
     optionsDiv.innerHTML = "";
 
-    const multiAnswer = Array.isArray(q.a) && q.a.length > 1;
+    const multiAnswer = q.a.length > 1;
 
     if (!multiAnswer) {
-      // תשובה אחת → כפתורים
       q.options.forEach(opt => {
         const btn = document.createElement("button");
         btn.textContent = opt;
@@ -62,20 +58,15 @@ document.addEventListener("DOMContentLoaded", () => {
         optionsDiv.appendChild(btn);
       });
     } else {
-      // כמה תשובות → checkbox
       q.options.forEach(opt => {
         const label = document.createElement("label");
-        label.style.display = "block";
-
         const input = document.createElement("input");
         input.type = "checkbox";
         input.value = opt;
-
         label.appendChild(input);
         label.appendChild(document.createTextNode(opt));
         optionsDiv.appendChild(label);
       });
-
       const checkBtn = document.createElement("button");
       checkBtn.textContent = "בדוק תשובות";
       checkBtn.onclick = () => checkMultiAnswer(q);
@@ -83,9 +74,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // --- טיפול בשאלה עם תשובה אחת ---
   function handleSingleAnswer(selected, question, button) {
-    if (selected === question.a) {
+    if (question.a.includes(selected)) {
       button.classList.add("correct");
       Array.from(optionsDiv.children).forEach(b => b.disabled = true);
       setTimeout(nextQuestion, 800);
@@ -96,7 +86,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // --- טיפול בשאלות מרובות תשובות ---
   function checkMultiAnswer(question) {
     const inputs = Array.from(optionsDiv.querySelectorAll("input:checked"));
     const selected = inputs.map(i => i.value);
@@ -104,13 +93,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const labels = optionsDiv.querySelectorAll("label");
     labels.forEach(label => {
       const val = label.querySelector("input").value;
-      if (question.a.includes(val)) {
-        label.style.color = "green"; // נכון
-      } else if (selected.includes(val) && !question.a.includes(val)) {
-        label.style.color = "red"; // טעות
-      } else {
-        label.style.color = "inherit"; // לא נבחר
-      }
+      if (question.a.includes(val)) label.style.color = "green";
+      else if (selected.includes(val)) label.style.color = "red";
+      else label.style.color = "inherit";
     });
 
     if (arraysEqual(selected, question.a)) {
@@ -120,17 +105,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // --- מעבר לשאלה הבאה ---
   function nextQuestion() {
     currentIndex++;
-    if (currentIndex >= quizQuestions.length) {
-      showSummary();
-    } else {
-      showQuestion();
-    }
+    if (currentIndex >= quizQuestions.length) showSummary();
+    else showQuestion();
   }
 
-  // --- סיום המשחק ---
   function showSummary() {
     quizDiv.classList.add("hidden");
     summaryDiv.classList.remove("hidden");
@@ -140,7 +120,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       let html = "<h3>שאלות שבהן טעית:</h3><ul>";
       wrongAnswers.forEach(q => {
-        html += `<li>${q.q} - תשובה נכונה: ${Array.isArray(q.a) ? q.a.join(", ") : q.a}</li>`;
+        html += `<li>${q.q} - תשובה נכונה: ${q.a.join(", ")}</li>`;
       });
       html += "</ul>";
       wrongAnswersDiv.innerHTML = html;
@@ -153,13 +133,11 @@ document.addEventListener("DOMContentLoaded", () => {
     quizDiv.classList.add("hidden");
   };
 
-  // --- עזרה להשוואת מערכים ---
   function arraysEqual(a, b) {
     if (a.length !== b.length) return false;
     return a.every(val => b.includes(val));
   }
 
-  // --- יצירת כפתורי פרקים ---
   const partColors = ["part-btn-1","part-btn-2","part-btn-3","part-btn-4","part-btn-5"];
   let colorIndex = 0;
   for (let key in questions) {

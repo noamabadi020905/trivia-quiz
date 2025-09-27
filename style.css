@@ -11,9 +11,7 @@ body {
   text-align: center;
 }
 
-h1, h2 {
-  color: #ffcc00;
-}
+h1, h2 { color: #ffcc00; }
 
 button {
   border-radius: 10px;
@@ -25,46 +23,19 @@ button {
   transition: all 0.2s;
 }
 
-button:hover {
-  transform: scale(1.05);
-}
+button:hover { transform: scale(1.05); }
 
-button.correct {
-  background-color: #28a745;
-  color: #fff;
-  border-color: #28a745;
-}
+button.correct { background-color: #28a745; color: #fff; border-color: #28a745; }
+button.wrong { background-color: #dc3545; color: #fff; border-color: #dc3545; }
 
-button.wrong {
-  background-color: #dc3545;
-  color: #fff;
-  border-color: #dc3545;
-}
+#options { display: flex; flex-direction: column; margin-top: 20px; }
 
-#options {
-  display: flex;
-  flex-direction: column;
-  margin-top: 20px;
-}
+#summary ul { list-style: none; padding: 0; }
+#summary li { margin-bottom: 10px; }
 
-#summary ul {
-  list-style: none;
-  padding: 0;
-}
+#parts-buttons { display: flex; flex-direction: column; margin: 20px 0; }
 
-#summary li {
-  margin-bottom: 10px;
-}
-
-#parts-buttons {
-  display: flex;
-  flex-direction: column;
-  margin: 20px 0;
-}
-
-.hidden {
-  display: none;
-}
+.hidden { display: none; }
 
 /* צבעים לחלקים */
 .part-btn-1 { background-color: #ff5733; border-color: #ff5733; color: #fff; }
@@ -75,6 +46,7 @@ button.wrong {
 .part-btn-all { background-color: #007bff; border-color: #007bff; color: #fff; }
 
 .part-btn-1:hover, .part-btn-2:hover, .part-btn-3:hover,
-.part-btn-4:hover, .part-btn-5:hover, .part-btn-all:hover {
-  opacity: 0.8;
-}
+.part-btn-4:hover, .part-btn-5:hover, .part-btn-all:hover { opacity: 0.8; }
+
+label { margin-bottom: 5px; cursor: pointer; }
+label input { margin-right: 10px; }
