@@ -53,27 +53,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const multiAnswer = Array.isArray(q.a) && q.a.length > 1;
 
-    q.options.forEach(opt => {
-      const label = document.createElement("label");
-      label.style.display = "block";
-
-      const input = document.createElement("input");
-      input.type = multiAnswer ? "checkbox" : "radio";
-      input.name = "answer";
-      input.value = opt;
-
-      label.appendChild(input);
-      label.appendChild(document.createTextNode(opt));
-      optionsDiv.appendChild(label);
-    });
-
     if (!multiAnswer) {
-      // שאלות רגילות - בודקות בלחיצה
-      Array.from(optionsDiv.querySelectorAll("input")).forEach(input => {
-        input.onclick = () => handleSingleAnswer(input.value, q);
+      // תשובה אחת → כפתורים
+      q.options.forEach(opt => {
+        const btn = document.createElement("button");
+        btn.textContent = opt;
+        btn.onclick = () => handleSingleAnswer(opt, q, btn);
+        optionsDiv.appendChild(btn);
       });
     } else {
-      // שאלות עם checkbox - כפתור בדיקה
+      // כמה תשובות → checkbox
+      q.options.forEach(opt => {
+        const label = document.createElement("label");
+        label.style.display = "block";
+
+        const input = document.createElement("input");
+        input.type = "checkbox";
+        input.value = opt;
+
+        label.appendChild(input);
+        label.appendChild(document.createTextNode(opt));
+        optionsDiv.appendChild(label);
+      });
+
       const checkBtn = document.createElement("button");
       checkBtn.textContent = "בדוק תשובות";
       checkBtn.onclick = () => checkMultiAnswer(q);
@@ -82,24 +84,16 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // --- טיפול בשאלה עם תשובה אחת ---
-  function handleSingleAnswer(selected, question) {
+  function handleSingleAnswer(selected, question, button) {
     if (selected === question.a) {
-      markSingleAnswer(selected, "correct");
+      button.classList.add("correct");
+      Array.from(optionsDiv.children).forEach(b => b.disabled = true);
       setTimeout(nextQuestion, 800);
     } else {
-      markSingleAnswer(selected, "wrong");
+      button.classList.add("wrong");
+      button.disabled = true;
       if (!wrongAnswers.includes(question)) wrongAnswers.push(question);
     }
-  }
-
-  function markSingleAnswer(selected, status) {
-    const inputs = optionsDiv.querySelectorAll("input");
-    inputs.forEach(input => {
-      if (input.value === selected) {
-        input.parentElement.classList.add(status);
-      }
-      input.disabled = true;
-    });
   }
 
   // --- טיפול בשאלות מרובות תשובות ---
