@@ -15,17 +15,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Map part keys to CSS classes for buttons
   const partClasses = {
-    " 1 - 3": "part-btn-1",
-    " 4 - 5": "part-btn-2",
-    " 6 - 7": "part-btn-3",
-    " רפואה": "part-btn-4",
-    " נשק": "part-btn-5",
-    " המנון": "part-btn-4",
-    " תחקיר": "part-btn-5",
-    " מפת ארץ ישראל": "part-btn-2"
+    "1 - 3": "part-btn-1",
+    "4 - 5": "part-btn-2",
+    "6 - 7": "part-btn-3",
+    "רפואה": "part-btn-4",
+    "נשק": "part-btn-5",
+    "המנון": "part-btn-4",
+    "תחקיר": "part-btn-5",
+    "מפת ארץ ישראל": "part-btn-2"
   };
 
-  function startQuiz(part) {
+  function startQuiz(partKey) {
     menuDiv.style.display = "none";
     quizDiv.style.display = "block";
     summaryDiv.style.display = "none";
@@ -33,14 +33,15 @@ document.addEventListener("DOMContentLoaded", () => {
     wrongAnswers = [];
     currentIndex = 0;
 
-    if (part === "all") {
+    // תקן במקרה של "כל החלקים"
+    if (partKey === "all") {
       quizQuestions = [];
       for (let key in questions) {
         const partQs = questions[key];
         quizQuestions.push(partQs[Math.floor(Math.random() * partQs.length)]);
       }
     } else {
-      quizQuestions = questions[part];
+      quizQuestions = questions[partKey];
     }
 
     showQuestion();
@@ -54,7 +55,13 @@ document.addEventListener("DOMContentLoaded", () => {
     q.options.forEach(opt => {
       const btn = document.createElement("button");
       btn.textContent = opt;
-      btn.classList.add(partClasses[getPartByQuestion(q)] || "");
+
+      // קבלת שם החלק של השאלה
+      const partKey = getPartKeyByQuestion(q);
+      if (partKey && partClasses[partKey]) {
+        btn.classList.add(partClasses[partKey]);
+      }
+
       btn.onclick = () => handleAnswer(opt, q, btn);
       optionsDiv.appendChild(btn);
     });
@@ -104,7 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // Helper to find part key for a question
-  function getPartByQuestion(question) {
+  function getPartKeyByQuestion(question) {
     for (let key in questions) {
       if (questions[key].includes(question)) return key;
     }
@@ -115,8 +122,11 @@ document.addEventListener("DOMContentLoaded", () => {
   for (let key in questions) {
     const btn = document.createElement("button");
     btn.textContent = `חלק: ${key.trim()}`;
-    btn.classList.add(partClasses[key] || "");
-    btn.onclick = () => startQuiz(key);
+    const className = partClasses[key.trim()] || "";
+    if (className) btn.classList.add(className);
+
+    // שימוש ב-trim כדי למנוע רווחים בשמות המפתחות
+    btn.onclick = () => startQuiz(key.trim());
     partsButtonsDiv.appendChild(btn);
   }
 
