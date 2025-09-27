@@ -39,16 +39,41 @@ document.addEventListener("DOMContentLoaded", () => {
     questionText.textContent = q.q;
     optionsDiv.innerHTML = "";
 
-    q.options.forEach(opt => {
-      const btn = document.createElement("button");
-      btn.textContent = opt;
-      btn.onclick = () => handleAnswer(opt, q, btn);
-      optionsDiv.appendChild(btn);
-    });
+    // אם התשובה היא מחרוזת → שאלה עם תשובה אחת
+    if (typeof q.a === "string" || (Array.isArray(q.a) && q.a.length === 1)) {
+      q.options.forEach(opt => {
+        const btn = document.createElement("button");
+        btn.textContent = opt;
+        btn.onclick = () => handleSingleAnswer(opt, q, btn);
+        optionsDiv.appendChild(btn);
+      });
+    } 
+    // אם התשובה היא מערך → שאלה עם כמה תשובות
+    else if (Array.isArray(q.a)) {
+      q.options.forEach(opt => {
+        const label = document.createElement("label");
+        label.style.display = "block";
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.value = opt;
+
+        label.appendChild(checkbox);
+        label.appendChild(document.createTextNode(opt));
+        optionsDiv.appendChild(label);
+      });
+
+      // כפתור אישור
+      const submitBtn = document.createElement("button");
+      submitBtn.textContent = "אישור";
+      submitBtn.onclick = () => handleMultiAnswer(q);
+      optionsDiv.appendChild(submitBtn);
+    }
   }
 
-  function handleAnswer(selected, question, button) {
-    if (selected === question.a) {
+  // טיפול בשאלות עם תשובה אחת
+  function handleSingleAnswer(selected, question, button) {
+    if (selected === question.a || (Array.isArray(question.a) && selected === question.a[0])) {
       button.classList.add("correct");
       Array.from(optionsDiv.children).forEach(b => b.disabled = true);
       setTimeout(nextQuestion, 800);
@@ -56,6 +81,39 @@ document.addEventListener("DOMContentLoaded", () => {
       button.classList.add("wrong");
       button.disabled = true;
       if (!wrongAnswers.includes(question)) wrongAnswers.push(question);
+    }
+  }
+
+  // טיפול בשאלות עם כמה תשובות
+  function handleMultiAnswer(question) {
+    const selected = Array.from(optionsDiv.querySelectorAll("input:checked"))
+                          .map(cb => cb.value);
+
+    const correctAnswers = question.a;
+
+    const isCorrect = 
+      selected.length === correctAnswers.length &&
+      selected.every(ans => correctAnswers.includes(ans));
+
+    if (isCorrect) {
+      optionsDiv.querySelectorAll("input").forEach(cb => {
+        if (correctAnswers.includes(cb.value)) {
+          cb.parentElement.classList.add("correct");
+        }
+        cb.disabled = true;
+      });
+      setTimeout(nextQuestion, 1000);
+    } else {
+      optionsDiv.querySelectorAll("input").forEach(cb => {
+        if (correctAnswers.includes(cb.value)) {
+          cb.parentElement.classList.add("correct");
+        } else if (cb.checked) {
+          cb.parentElement.classList.add("wrong");
+        }
+        cb.disabled = true;
+      });
+      if (!wrongAnswers.includes(question)) wrongAnswers.push(question);
+      setTimeout(nextQuestion, 1500);
     }
   }
 
@@ -77,7 +135,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       let html = "<h3>שאלות שבהן טעית:</h3><ul>";
       wrongAnswers.forEach(q => {
-        html += `<li>${q.q} - תשובה נכונה: ${q.a}</li>`;
+        html += `<li>${q.q} - תשובה נכונה: ${Array.isArray(q.a) ? q.a.join(", ") : q.a}</li>`;
       });
       html += "</ul>";
       wrongAnswersDiv.innerHTML = html;
