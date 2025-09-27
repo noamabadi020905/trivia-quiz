@@ -9,129 +9,124 @@ document.addEventListener("DOMContentLoaded", () => {
   const wrongAnswersDiv = document.getElementById("wrong-answers");
   const playAgainBtn = document.getElementById("play-again-btn");
 
-  function shuffleArray(array) {
-  let shuffled = [...array];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  return shuffled;
-}
-
-
   let quizQuestions = [];
   let currentIndex = 0;
   let wrongAnswers = [];
 
-function startQuiz(partKey) {
-  menuDiv.classList.add("hidden");
-  quizDiv.classList.remove("hidden");
-  summaryDiv.classList.add("hidden");
-
-  wrongAnswers = [];
-  currentIndex = 0;
-
-  if (partKey === "all") {
-    quizQuestions = [];
-    for (let key in questions) {
-      const partQs = questions[key];
-      // ניקח שאלה אקראית מכל חלק
-      quizQuestions.push(partQs[Math.floor(Math.random() * partQs.length)]);
+  // --- פונקציית shuffle ---
+  function shuffleArray(array) {
+    let shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
-  } else {
-    // >>> כאן השינוי – עושים shuffle לרשימה של הפרק
-    quizQuestions = shuffleArray(questions[partKey]);
+    return shuffled;
   }
 
-  showQuestion();
-}
+  // --- התחלת המשחק לפי פרק ---
+  function startQuiz(partKey) {
+    menuDiv.classList.add("hidden");
+    quizDiv.classList.remove("hidden");
+    summaryDiv.classList.add("hidden");
 
+    wrongAnswers = [];
+    currentIndex = 0;
 
-  
+    if (partKey === "all") {
+      quizQuestions = [];
+      for (let key in questions) {
+        quizQuestions = quizQuestions.concat(questions[key]);
+      }
+      quizQuestions = shuffleArray(quizQuestions);
+    } else {
+      quizQuestions = shuffleArray(questions[partKey]);
+    }
 
+    showQuestion();
+  }
+
+  // --- הצגת שאלה ---
   function showQuestion() {
     const q = quizQuestions[currentIndex];
     questionText.textContent = q.q;
     optionsDiv.innerHTML = "";
 
-    // אם התשובה היא מחרוזת → שאלה עם תשובה אחת
-    if (typeof q.a === "string" || (Array.isArray(q.a) && q.a.length === 1)) {
-      q.options.forEach(opt => {
-        const btn = document.createElement("button");
-        btn.textContent = opt;
-        btn.onclick = () => handleSingleAnswer(opt, q, btn);
-        optionsDiv.appendChild(btn);
+    const multiAnswer = Array.isArray(q.a) && q.a.length > 1;
+
+    q.options.forEach(opt => {
+      const label = document.createElement("label");
+      label.style.display = "block";
+
+      const input = document.createElement("input");
+      input.type = multiAnswer ? "checkbox" : "radio";
+      input.name = "answer";
+      input.value = opt;
+
+      label.appendChild(input);
+      label.appendChild(document.createTextNode(opt));
+      optionsDiv.appendChild(label);
+    });
+
+    if (!multiAnswer) {
+      // שאלות רגילות - בודקות בלחיצה
+      Array.from(optionsDiv.querySelectorAll("input")).forEach(input => {
+        input.onclick = () => handleSingleAnswer(input.value, q);
       });
-    } 
-    // אם התשובה היא מערך → שאלה עם כמה תשובות
-    else if (Array.isArray(q.a)) {
-      q.options.forEach(opt => {
-        const label = document.createElement("label");
-        label.style.display = "block";
-
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.value = opt;
-
-        label.appendChild(checkbox);
-        label.appendChild(document.createTextNode(opt));
-        optionsDiv.appendChild(label);
-      });
-
-      // כפתור אישור
-      const submitBtn = document.createElement("button");
-      submitBtn.textContent = "אישור";
-      submitBtn.onclick = () => handleMultiAnswer(q);
-      optionsDiv.appendChild(submitBtn);
+    } else {
+      // שאלות עם checkbox - כפתור בדיקה
+      const checkBtn = document.createElement("button");
+      checkBtn.textContent = "בדוק תשובות";
+      checkBtn.onclick = () => checkMultiAnswer(q);
+      optionsDiv.appendChild(checkBtn);
     }
   }
 
-  // טיפול בשאלות עם תשובה אחת
-  function handleSingleAnswer(selected, question, button) {
-    if (selected === question.a || (Array.isArray(question.a) && selected === question.a[0])) {
-      button.classList.add("correct");
-      Array.from(optionsDiv.children).forEach(b => b.disabled = true);
+  // --- טיפול בשאלה עם תשובה אחת ---
+  function handleSingleAnswer(selected, question) {
+    if (selected === question.a) {
+      markSingleAnswer(selected, "correct");
       setTimeout(nextQuestion, 800);
     } else {
-      button.classList.add("wrong");
-      button.disabled = true;
+      markSingleAnswer(selected, "wrong");
       if (!wrongAnswers.includes(question)) wrongAnswers.push(question);
     }
   }
 
-  // טיפול בשאלות עם כמה תשובות
-  function handleMultiAnswer(question) {
-    const selected = Array.from(optionsDiv.querySelectorAll("input:checked"))
-                          .map(cb => cb.value);
+  function markSingleAnswer(selected, status) {
+    const inputs = optionsDiv.querySelectorAll("input");
+    inputs.forEach(input => {
+      if (input.value === selected) {
+        input.parentElement.classList.add(status);
+      }
+      input.disabled = true;
+    });
+  }
 
-    const correctAnswers = question.a;
+  // --- טיפול בשאלות מרובות תשובות ---
+  function checkMultiAnswer(question) {
+    const inputs = Array.from(optionsDiv.querySelectorAll("input:checked"));
+    const selected = inputs.map(i => i.value);
 
-    const isCorrect = 
-      selected.length === correctAnswers.length &&
-      selected.every(ans => correctAnswers.includes(ans));
+    const labels = optionsDiv.querySelectorAll("label");
+    labels.forEach(label => {
+      const val = label.querySelector("input").value;
+      if (question.a.includes(val)) {
+        label.style.color = "green"; // נכון
+      } else if (selected.includes(val) && !question.a.includes(val)) {
+        label.style.color = "red"; // טעות
+      } else {
+        label.style.color = "inherit"; // לא נבחר
+      }
+    });
 
-    if (isCorrect) {
-      optionsDiv.querySelectorAll("input").forEach(cb => {
-        if (correctAnswers.includes(cb.value)) {
-          cb.parentElement.classList.add("correct");
-        }
-        cb.disabled = true;
-      });
+    if (arraysEqual(selected, question.a)) {
       setTimeout(nextQuestion, 1000);
     } else {
-      optionsDiv.querySelectorAll("input").forEach(cb => {
-        if (correctAnswers.includes(cb.value)) {
-          cb.parentElement.classList.add("correct");
-        } else if (cb.checked) {
-          cb.parentElement.classList.add("wrong");
-        }
-        cb.disabled = true;
-      });
-      if (!wrongAnswers.includes(question)) wrongAnswers.push(question);
-      setTimeout(nextQuestion, 1500);
+      alert("טעית או חסר משהו, נסה שוב!");
     }
   }
 
+  // --- מעבר לשאלה הבאה ---
   function nextQuestion() {
     currentIndex++;
     if (currentIndex >= quizQuestions.length) {
@@ -141,6 +136,7 @@ function startQuiz(partKey) {
     }
   }
 
+  // --- סיום המשחק ---
   function showSummary() {
     quizDiv.classList.add("hidden");
     summaryDiv.classList.remove("hidden");
@@ -163,7 +159,13 @@ function startQuiz(partKey) {
     quizDiv.classList.add("hidden");
   };
 
-  // Generate part buttons
+  // --- עזרה להשוואת מערכים ---
+  function arraysEqual(a, b) {
+    if (a.length !== b.length) return false;
+    return a.every(val => b.includes(val));
+  }
+
+  // --- יצירת כפתורי פרקים ---
   const partColors = ["part-btn-1","part-btn-2","part-btn-3","part-btn-4","part-btn-5"];
   let colorIndex = 0;
   for (let key in questions) {
