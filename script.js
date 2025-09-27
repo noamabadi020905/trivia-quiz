@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
+  const menuDiv = document.getElementById("menu");
   const partsButtonsDiv = document.getElementById("parts-buttons");
   const allPartsBtn = document.getElementById("all-parts-btn");
-  const menuDiv = document.getElementById("menu");
   const quizDiv = document.getElementById("quiz");
   const questionText = document.getElementById("question-text");
   const optionsDiv = document.getElementById("options");
@@ -13,12 +13,22 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentIndex = 0;
   let wrongAnswers = [];
 
-  function startQuiz(part) {
-    // Hide menu (choose part)
-    menuDiv.classList.add("hidden");
+  // Map part keys to CSS classes for buttons
+  const partClasses = {
+    " 1 - 3": "part-btn-1",
+    " 4 - 5": "part-btn-2",
+    " 6 - 7": "part-btn-3",
+    " רפואה": "part-btn-4",
+    " נשק": "part-btn-5",
+    " המנון": "part-btn-4",
+    " תחקיר": "part-btn-5",
+    " מפת ארץ ישראל": "part-btn-2"
+  };
 
-    quizDiv.classList.remove("hidden");
-    summaryDiv.classList.add("hidden");
+  function startQuiz(part) {
+    menuDiv.style.display = "none";
+    quizDiv.style.display = "block";
+    summaryDiv.style.display = "none";
 
     wrongAnswers = [];
     currentIndex = 0;
@@ -44,6 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
     q.options.forEach(opt => {
       const btn = document.createElement("button");
       btn.textContent = opt;
+      btn.classList.add(partClasses[getPartByQuestion(q)] || "");
       btn.onclick = () => handleAnswer(opt, q, btn);
       optionsDiv.appendChild(btn);
     });
@@ -71,8 +82,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function showSummary() {
-    quizDiv.classList.add("hidden");
-    summaryDiv.classList.remove("hidden");
+    quizDiv.style.display = "none";
+    summaryDiv.style.display = "block";
 
     if (wrongAnswers.length === 0) {
       wrongAnswersDiv.innerHTML = "<p>כל התשובות נכונות! כל הכבוד 🎉</p>";
@@ -86,15 +97,29 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  playAgainBtn.onclick = () => location.reload();
+  playAgainBtn.onclick = () => {
+    menuDiv.style.display = "block";
+    summaryDiv.style.display = "none";
+    quizDiv.style.display = "none";
+  };
 
-  // Generate buttons for each part
+  // Helper to find part key for a question
+  function getPartByQuestion(question) {
+    for (let key in questions) {
+      if (questions[key].includes(question)) return key;
+    }
+    return null;
+  }
+
+  // Generate buttons for each part dynamically
   for (let key in questions) {
     const btn = document.createElement("button");
-    btn.textContent = `חלק: ${key.replace("part_", "")}`;
+    btn.textContent = `חלק: ${key.trim()}`;
+    btn.classList.add(partClasses[key] || "");
     btn.onclick = () => startQuiz(key);
     partsButtonsDiv.appendChild(btn);
   }
 
+  allPartsBtn.classList.add("part-btn-all");
   allPartsBtn.onclick = () => startQuiz("all");
 });

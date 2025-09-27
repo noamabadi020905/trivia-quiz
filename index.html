@@ -3,30 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>טריוויה שלי</title>
+  <title>טריוויה בעברית</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="app">
-    <!-- Menu -->
-    <div id="menu">
-      <h1>ברוכים הבאים לטריוויה הכי טובה בעולם!</h1>
-      <div id="parts-buttons"></div>
-      <button id="all-parts-btn">טריוויה מכל החלקים</button>
-    </div>
+  <div id="menu">
+    <h1>ברוכים הבאים לטריוויה הכי טובה בעולם!</h1>
+    <div id="parts-buttons"></div>
+    <button id="all-parts-btn">טריוויה מכל החלקים</button>
+  </div>
 
-    <!-- Quiz -->
-    <div id="quiz" class="hidden">
-      <h2 id="question-text"></h2>
-      <div id="options"></div>
-    </div>
+  <div id="quiz" style="display:none;">
+    <h2 id="question-text"></h2>
+    <div id="options"></div>
+  </div>
 
-    <!-- Summary -->
-    <div id="summary" class="hidden">
-      <h2>סיום הטריוויה!</h2>
-      <div id="wrong-answers"></div>
-      <button id="play-again-btn">שחק שוב</button>
-    </div>
+  <div id="summary" style="display:none;">
+    <h2>סיום הטריוויה!</h2>
+    <div id="wrong-answers"></div>
+    <button id="play-again-btn">שחק שוב</button>
   </div>
 
   <script src="questions.js"></script>
