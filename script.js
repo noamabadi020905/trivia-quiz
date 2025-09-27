@@ -9,30 +9,45 @@ document.addEventListener("DOMContentLoaded", () => {
   const wrongAnswersDiv = document.getElementById("wrong-answers");
   const playAgainBtn = document.getElementById("play-again-btn");
 
+  function shuffleArray(array) {
+  let shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
+
   let quizQuestions = [];
   let currentIndex = 0;
   let wrongAnswers = [];
 
-  function startQuiz(partKey) {
-    menuDiv.classList.add("hidden");
-    quizDiv.classList.remove("hidden");
-    summaryDiv.classList.add("hidden");
+function startQuiz(partKey) {
+  menuDiv.classList.add("hidden");
+  quizDiv.classList.remove("hidden");
+  summaryDiv.classList.add("hidden");
 
-    wrongAnswers = [];
-    currentIndex = 0;
+  wrongAnswers = [];
+  currentIndex = 0;
 
-    if (partKey === "all") {
-      quizQuestions = [];
-      for (let key in questions) {
-        const partQs = questions[key];
-        quizQuestions.push(partQs[Math.floor(Math.random() * partQs.length)]);
-      }
-    } else {
-      quizQuestions = [...questions[partKey]];
+  if (partKey === "all") {
+    quizQuestions = [];
+    for (let key in questions) {
+      const partQs = questions[key];
+      // ניקח שאלה אקראית מכל חלק
+      quizQuestions.push(partQs[Math.floor(Math.random() * partQs.length)]);
     }
-
-    showQuestion();
+  } else {
+    // >>> כאן השינוי – עושים shuffle לרשימה של הפרק
+    quizQuestions = shuffleArray(questions[partKey]);
   }
+
+  showQuestion();
+}
+
+
+  
 
   function showQuestion() {
     const q = quizQuestions[currentIndex];
