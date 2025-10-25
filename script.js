@@ -19,7 +19,7 @@ label.appendChild(document.createTextNode(opt));
 optionsDiv.appendChild(label);
 });
 if(!first){const box=document.getElementById('questionBox');box.classList.remove('fade-slide');void box.offsetWidth;box.classList.add('fade-slide');}
-}
+
 
 
 function getPicked(){return Array.from(optionsDiv.querySelectorAll('input:checked')).map(i=>i.value);}
