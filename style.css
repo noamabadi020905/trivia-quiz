@@ -3,7 +3,9 @@ body{font-family:Heebo,Arial,sans-serif;background:#0f172a;color:#fff;margin:0;p
 .card{background:#1e293b;border-radius:16px;padding:20px;box-shadow:0 4px 20px rgba(0,0,0,0.3);animation:fadeIn 0.6s ease}
 h1,h2{margin-top:0;text-align:center}
 button{background:#38bdf8;color:#fff;border:none;padding:10px 16px;border-radius:8px;font-size:16px;margin-top:12px;cursor:pointer;width:100%;transition:background 0.2s ease,transform 0.2s ease}
-button:hover{background:#0ea5e9;transform:translateY(-2px)}
+button:hover{transform:translateY(-2px)}
+button.exit{background:#ef4444}
+button.exit:hover{background:#dc2626}
 .options{display:flex;flex-direction:column;gap:10px;margin-top:15px}
 label{background:#0f172a;border:1px solid #334155;border-radius:10px;padding:10px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:transform 0.2s ease,background 0.2s ease}
 label:hover{transform:scale(1.02);background:#16213b}
@@ -16,3 +18,5 @@ input[type=checkbox],input[type=radio]{accent-color:#38bdf8}
 @keyframes fadeIn{from{opacity:0;transform:scale(0.98)}to{opacity:1;transform:scale(1)}}
 @keyframes slideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:600px){body{padding:10px}h1{font-size:22px}button{font-size:15px}}
+
+

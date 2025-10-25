@@ -12,6 +12,9 @@
     <div id="menu" class="card fade-in">
       <h1>טריוויה לפי פרקים</h1>
       <p style="text-align:center">בחר/י פרק לשחק עליו, או שחק/י על כל הפרקים יחד:</p>
+      <label style="display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:10px;">
+        <input type="checkbox" id="shuffleQuestions"> ערבב שאלות בכל משחק
+      </label>
       <div id="chapters"></div>
       <button id="allBtn">🎯 שחק מכל הפרקים</button>
     </div>
@@ -23,7 +26,10 @@
         <h3 id="questionText"></h3>
         <div id="options" class="options"></div>
         <div id="feedback"></div>
-        <button id="submitBtn">בדוק תשובה ▶</button>
+        <div style="display:flex;gap:10px;flex-direction:column;">
+          <button id="submitBtn">בדוק תשובה ▶</button>
+          <button id="exitBtn" class="exit">🔚 סיים טריוויה</button>
+        </div>
       </div>
     </div>
 
