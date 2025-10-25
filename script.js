@@ -1,161 +1,92 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const menuDiv = document.getElementById("menu");
-  const partsButtonsDiv = document.getElementById("parts-buttons");
-  const allPartsBtn = document.getElementById("all-parts-btn");
-  const quizDiv = document.getElementById("quiz");
-  const questionText = document.getElementById("question-text");
-  const optionsDiv = document.getElementById("options");
-  const summaryDiv = document.getElementById("summary");
-  const wrongAnswersDiv = document.getElementById("wrong-answers");
-  const playAgainBtn = document.getElementById("play-again-btn");
+const menu=document.getElementById('menu');
+const chaptersDiv=document.getElementById('chapters');
+const game=document.getElementById('game');
+const summary=document.getElementById('summary');
+const questionText=document.getElementById('questionText');
+const optionsDiv=document.getElementById('options');
+const feedback=document.getElementById('feedback');
+const chapterName=document.getElementById('chapterName');
+const progress=document.getElementById('progress');
+const submitBtn=document.getElementById('submitBtn');
+const scoreText=document.getElementById('scoreText');
 
-  let quizQuestions = [];
-  let currentIndex = 0;
-  let wrongAnswers = [];
+let currentSet=[],chapter='',index=0,score=0;
 
-  function shuffleArray(array) {
-    const shuffled = [...array];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    return shuffled;
+function showMenu(){
+  chaptersDiv.innerHTML='';
+  Object.keys(questions).forEach(k=>{
+    const btn=document.createElement('button');
+    btn.textContent=`📘 ${k}`;
+    btn.onclick=()=>startGame(k);
+    chaptersDiv.appendChild(btn);
+  });
+}
+
+function gatherAll(){return Object.values(questions).flat();}
+
+function startGame(k){
+  chapter=k==='__ALL__'?'כל הפרקים':k;
+  currentSet=k==='__ALL__'?gatherAll():questions[k];
+  index=0;score=0;
+  menu.classList.add('hidden');summary.classList.add('hidden');game.classList.remove('hidden');
+  renderQuestion(true);
+}
+
+function renderQuestion(first=false){
+  feedback.textContent='';
+  const q=currentSet[index];
+  chapterName.textContent=chapter;
+  progress.textContent=`שאלה ${index+1} מתוך ${currentSet.length}`;
+  questionText.textContent=q.q;
+  optionsDiv.innerHTML='';
+  const multi=q.a.length>1;
+  q.options.forEach(opt=>{
+    const label=document.createElement('label');
+    const input=document.createElement('input');
+    input.type=multi?'checkbox':'radio';
+    input.name='option';
+    input.value=opt;
+    label.appendChild(input);
+    label.appendChild(document.createTextNode(opt));
+    optionsDiv.appendChild(label);
+  });
+  if(!first){
+    const box=document.getElementById('questionBox');
+    box.classList.remove('fade-slide');
+    void box.offsetWidth;
+    box.classList.add('fade-slide');
   }
+}
 
-  function startQuiz(partKey) {
-    menuDiv.classList.add("hidden");
-    quizDiv.classList.remove("hidden");
-    summaryDiv.classList.add("hidden");
+function getPicked(){return Array.from(optionsDiv.querySelectorAll('input:checked')).map(i=>i.value);}
+function arraysEqual(a,b){return a.length===b.length && a.every(x=>b.includes(x));}
 
-    wrongAnswers = [];
-    currentIndex = 0;
-
-    if (partKey === "all") {
-      quizQuestions = [];
-      for (let key in questions) {
-        quizQuestions = quizQuestions.concat(questions[key]);
-      }
-    } else {
-      quizQuestions = [...questions[partKey]];
-    }
-    quizQuestions = shuffleArray(quizQuestions);
-
-    showQuestion();
+submitBtn.onclick=()=>{
+  const q=currentSet[index];
+  const picked=getPicked();
+  if(!picked.length){feedback.textContent='בחר תשובה';feedback.style.color='orange';return;}
+  const correct=q.a;
+  if(arraysEqual(picked.sort(),correct.sort())){
+    feedback.textContent='נכון ✅';feedback.style.color='#34d399';
+    score++;
+    setTimeout(()=>{
+      index++;
+      if(index<currentSet.length)renderQuestion();
+      else endGame();
+    },700);
+  } else {
+    feedback.textContent='לא נכון ❌ נסה שוב';feedback.style.color='#f87171';
+    optionsDiv.querySelectorAll('input').forEach(i=>i.checked=false);
   }
+}
 
-  function showQuestion() {
-    const q = quizQuestions[currentIndex];
-    questionText.textContent = q.q;
-    optionsDiv.innerHTML = "";
+function endGame(){
+  game.classList.add('hidden');summary.classList.remove('hidden');
+  scoreText.textContent=`ניקוד: ${score}/${currentSet.length}`;
+}
 
-    const multiAnswer = q.a.length > 1;
+document.getElementById('againBtn').onclick=()=>startGame(chapter);
+document.getElementById('menuBtn').onclick=()=>{summary.classList.add('hidden');menu.classList.remove('hidden');};
+document.getElementById('allBtn').onclick=()=>startGame('__ALL__');
 
-    if (!multiAnswer) {
-      // שאלה עם תשובה אחת
-      q.options.forEach(opt => {
-        const btn = document.createElement("button");
-        btn.textContent = opt;
-        btn.onclick = () => handleSingleAnswer(opt, q, btn);
-        optionsDiv.appendChild(btn);
-      });
-    } else {
-      // שאלה עם תשובות מרובות
-      q.options.forEach(opt => {
-        const label = document.createElement("label");
-        const input = document.createElement("input");
-        input.type = "checkbox";
-        input.value = opt;
-        label.appendChild(input);
-        label.appendChild(document.createTextNode(opt));
-        optionsDiv.appendChild(label);
-      });
-
-      const checkBtn = document.createElement("button");
-      checkBtn.textContent = "בדוק תשובות";
-      checkBtn.onclick = () => checkMultiAnswer(q);
-      optionsDiv.appendChild(checkBtn);
-    }
-  }
-
-  function handleSingleAnswer(selected, question, button) {
-    if (question.a.includes(selected)) {
-      button.classList.add("correct");
-      Array.from(optionsDiv.children).forEach(b => b.disabled = true);
-      setTimeout(nextQuestion, 800);
-    } else {
-      button.classList.add("wrong");
-      button.disabled = true;
-      if (!wrongAnswers.includes(question)) wrongAnswers.push(question);
-    }
-  }
-
-  function checkMultiAnswer(question) {
-    const inputs = Array.from(optionsDiv.querySelectorAll("input"));
-    const selected = inputs.filter(i => i.checked).map(i => i.value);
-
-    // צבעים עבור כל תשובה
-    inputs.forEach(i => {
-      const label = i.parentElement;
-      if (question.a.includes(i.value)) {
-        if (i.checked) label.style.color = "green"; // בחר נכון
-        else label.style.color = "black"; // תשובה נכונה שלא בחר
-      } else {
-        if (i.checked) label.style.color = "red"; // בחר לא נכון
-        else label.style.color = "black"; // לא בחר נכון
-      }
-    });
-
-    // בדיקה אם סימן את כל התשובות הנכונות בלבד
-    if (arraysEqual(selected, question.a)) {
-      setTimeout(nextQuestion, 1000);
-    } else {
-      alert("טעית או חסר לך משהו, נסה שוב!");
-    }
-  }
-
-  function nextQuestion() {
-    currentIndex++;
-    if (currentIndex >= quizQuestions.length) showSummary();
-    else showQuestion();
-  }
-
-  function showSummary() {
-    quizDiv.classList.add("hidden");
-    summaryDiv.classList.remove("hidden");
-
-    if (wrongAnswers.length === 0) {
-      wrongAnswersDiv.innerHTML = "<p>כל התשובות נכונות! כל הכבוד 🎉</p>";
-    } else {
-      let html = "<h3>שאלות שבהן טעית:</h3><ul>";
-      wrongAnswers.forEach(q => {
-        html += `<li>${q.q} - תשובה נכונה: ${q.a.join(", ")}</li>`;
-      });
-      html += "</ul>";
-      wrongAnswersDiv.innerHTML = html;
-    }
-  }
-
-  playAgainBtn.onclick = () => {
-    menuDiv.classList.remove("hidden");
-    summaryDiv.classList.add("hidden");
-    quizDiv.classList.add("hidden");
-  };
-
-  function arraysEqual(a, b) {
-    if (a.length !== b.length) return false;
-    return a.every(val => b.includes(val));
-  }
-
-  const partColors = ["part-btn-1","part-btn-2","part-btn-3","part-btn-4","part-btn-5"];
-  let colorIndex = 0;
-  for (let key in questions) {
-    const btn = document.createElement("button");
-    btn.textContent = `חלק: ${key}`;
-    btn.classList.add(partColors[colorIndex % partColors.length]);
-    btn.onclick = () => startQuiz(key);
-    partsButtonsDiv.appendChild(btn);
-    colorIndex++;
-  }
-
-  allPartsBtn.onclick = () => startQuiz("all");
-});
+showMenu();

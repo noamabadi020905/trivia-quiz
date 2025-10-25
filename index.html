@@ -1,31 +1,40 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>טריוויה בעברית - Noam Trivia</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>טריוויה לפי פרקים</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="questions.js"></script>
 </head>
 <body>
-<div id="menu">
-  <h1>ברוכים הבאים לטריוויה!</h1>
-  <p>בחרו חלק לשחק או טריוויה מכל החלקים:</p>
-  <div id="parts-buttons"></div>
-  <button id="all-parts-btn" class="part-btn-all">טריוויה מכל החלקים</button>
-</div>
+  <div id="container">
+    <div id="menu" class="card fade-in">
+      <h1>טריוויה לפי פרקים</h1>
+      <p style="text-align:center">בחר/י פרק לשחק עליו, או שחק/י על כל הפרקים יחד:</p>
+      <div id="chapters"></div>
+      <button id="allBtn">🎯 שחק מכל הפרקים</button>
+    </div>
 
-<div id="quiz" class="hidden">
-  <h2 id="question-text"></h2>
-  <div id="options"></div>
-</div>
+    <div id="game" class="card hidden fade-in">
+      <h2 id="chapterName"></h2>
+      <p id="progress"></p>
+      <div id="questionBox" class="fade-slide">
+        <h3 id="questionText"></h3>
+        <div id="options" class="options"></div>
+        <div id="feedback"></div>
+        <button id="submitBtn">בדוק תשובה ▶</button>
+      </div>
+    </div>
 
-<div id="summary" class="hidden">
-  <h2>סיום הטריוויה!</h2>
-  <div id="wrong-answers"></div>
-  <button id="play-again-btn">שחק שוב</button>
-</div>
+    <div id="summary" class="card hidden fade-in">
+      <h2>סיום!</h2>
+      <p id="scoreText"></p>
+      <button id="againBtn">שחק שוב</button>
+      <button id="menuBtn">חזרה לתפריט</button>
+    </div>
+  </div>
 
-<script src="questions.js"></script>
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>

@@ -1,120 +1,18 @@
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: #111;
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 100vh;
-  padding: 20px;
-  text-align: center;
-}
-
-h1, h2 {
-  color: #ffcc00;
-}
-
-button {
-  border-radius: 10px;
-  padding: 10px 20px;
-  margin: 5px;
-  font-size: 1rem;
-  cursor: pointer;
-  border: 2px solid #fff;
-  transition: all 0.2s;
-}
-
-button:hover {
-  transform: scale(1.05);
-}
-
-button.correct {
-  background-color: #28a745;
-  color: #fff;
-  border-color: #28a745;
-}
-
-button.wrong {
-  background-color: #dc3545;
-  color: #fff;
-  border-color: #dc3545;
-}
-
-#options {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  margin-top: 20px;
-  width: 100%;
-  max-width: 500px;
-}
-
-#options button {
-  width: 100%;
-}
-
-#options label {
-  display: flex;
-  align-items: center;
-  background-color: #222;
-  border-radius: 8px;
-  padding: 10px;
-  margin-bottom: 10px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-#options label:hover {
-  background-color: #333;
-}
-
-#options input[type="checkbox"] {
-  margin-right: 10px;
-  transform: scale(1.3);
-}
-
-#summary ul {
-  list-style: none;
-  padding: 0;
-}
-
-#summary li {
-  margin-bottom: 10px;
-}
-
-#parts-buttons {
-  display: flex;
-  flex-direction: column;
-  margin: 20px 0;
-  width: 100%;
-  max-width: 400px;
-}
-
-.hidden {
-  display: none;
-}
-
-/* צבעים לחלקים */
-.part-btn-1 { background-color: #ff5733; border-color: #ff5733; color: #fff; }
-.part-btn-2 { background-color: #33c1ff; border-color: #33c1ff; color: #fff; }
-.part-btn-3 { background-color: #ff33e3; border-color: #ff33e3; color: #fff; }
-.part-btn-4 { background-color: #33ff57; border-color: #33ff57; color: #111; }
-.part-btn-5 { background-color: #ffc733; border-color: #ffc733; color: #111; }
-.part-btn-all { background-color: #007bff; border-color: #007bff; color: #fff; }
-
-.part-btn-1:hover, .part-btn-2:hover, .part-btn-3:hover,
-.part-btn-4:hover, .part-btn-5:hover, .part-btn-all:hover {
-  opacity: 0.8;
-}
-
-/* צבעים למצב של תשובה נכונה/לא נכונה בשאלות מרובות */
-label.correct {
-  background-color: #28a745 !important;
-  color: #fff;
-}
-
-label.wrong {
-  background-color: #dc3545 !important;
-  color: #fff;
-}
+body{font-family:Heebo,Arial,sans-serif;background:#0f172a;color:#fff;margin:0;padding:0;display:flex;justify-content:center;align-items:center;min-height:100vh;overflow-x:hidden}
+#container{max-width:600px;width:100%;padding:20px;box-sizing:border-box}
+.card{background:#1e293b;border-radius:16px;padding:20px;box-shadow:0 4px 20px rgba(0,0,0,0.3);animation:fadeIn 0.6s ease}
+h1,h2{margin-top:0;text-align:center}
+button{background:#38bdf8;color:#fff;border:none;padding:10px 16px;border-radius:8px;font-size:16px;margin-top:12px;cursor:pointer;width:100%;transition:background 0.2s ease,transform 0.2s ease}
+button:hover{background:#0ea5e9;transform:translateY(-2px)}
+.options{display:flex;flex-direction:column;gap:10px;margin-top:15px}
+label{background:#0f172a;border:1px solid #334155;border-radius:10px;padding:10px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:transform 0.2s ease,background 0.2s ease}
+label:hover{transform:scale(1.02);background:#16213b}
+input[type=checkbox],input[type=radio]{accent-color:#38bdf8}
+#chapters button{margin-top:10px}
+.hidden{display:none}
+#feedback{margin-top:10px;font-weight:600;text-align:center;min-height:24px}
+.fade-in{animation:fadeIn 0.6s ease forwards}
+.fade-slide{animation:slideIn 0.4s ease}
+@keyframes fadeIn{from{opacity:0;transform:scale(0.98)}to{opacity:1;transform:scale(1)}}
+@keyframes slideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:600px){body{padding:10px}h1{font-size:22px}button{font-size:15px}}
