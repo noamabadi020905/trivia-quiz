@@ -1,17 +1,34 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>טריוויה מבחנים</title>
+  <link rel="stylesheet" href="style.css">
+
+  <!-- קוד כללי של המשחק -->
+  <script src="script.js" defer></script>
+
+  <!-- קבצי המבחנים (כל קובץ = מבחן) -->
+  <script src="exams/raf0.js" defer></script>
+  <script src="exams/maoz.js" defer></script>
+  <!-- בעתיד: פשוט להוסיף כאן עוד שורה לכל מבחן חדש -->
+</head>
 <body>
   <div id="container">
     <!-- מסך בחירת מבחן -->
     <div id="examSelect" class="card fade-in">
-      <h1>בחירת מבחן</h1>
-      <p style="text-align:center">בחר/י סוג מבחן:</p>
-      <button data-exam="raf0">📚 מבחן רף 0</button>
-      <button data-exam="maoz">🛡️ מבחן מעוז</button>
+      <h1>בחר/י מבחן</h1>
+      <p style="text-align:center">בחר/י איזה מבחן לשחק:</p>
+      <div id="examButtons" class="exam-buttons"></div>
     </div>
 
-    <!-- תפריט פרקים (רלוונטי למבחן רף 0) -->
+    <!-- תפריט פרקים (רלוונטי רק למבחנים שמחולקים לפרקים, כמו רף 0) -->
     <div id="menu" class="card hidden fade-in">
-      <h1>טריוויה לפי פרקים</h1>
-      <p style="text-align:center">בחר/י פרק לשחק עליו, או שחק/י על כל הפרקים יחד:</p>
+      <h1 id="examTitle">טריוויה לפי פרקים</h1>
+      <p style="text-align:center">
+        בחר/י פרק לשחק עליו, או שחק/י על כל הפרקים יחד:
+      </p>
       <label style="display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:10px;">
         <input type="checkbox" id="shuffleQuestions"> ערבב שאלות בכל משחק
       </label>
@@ -43,6 +60,5 @@
       <button id="menuBtn">חזרה לתפריט</button>
     </div>
   </div>
-
-  <script src="script.js"></script>
 </body>
+</html>
