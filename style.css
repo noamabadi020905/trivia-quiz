@@ -26,3 +26,34 @@ input[type=checkbox],input[type=radio]{accent-color:#38bdf8}
   gap: 10px;
   margin-top: 10px;
 }
+
+.order-list {
+  display: flex;
+  color: #0f172a;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.order-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background: #f9fafb;
+  font-size: 0.9rem;
+}
+
+.order-text {
+  flex: 1;
+  margin-left: 10px;
+}
+
+.order-select {
+  min-width: 80px;
+  padding: 4px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 0.85rem;
+}
