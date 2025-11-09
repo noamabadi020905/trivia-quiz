@@ -1,5 +1,5 @@
 registerExam({
-  id: 'brosh-gdud',
+  id: 'brosh_gdud',
   title: 'מבחן סף גדוד ברוש',
   mode: 'flat',
   questions: [
@@ -19,7 +19,6 @@ registerExam({
         "סיכום המפקד (רשות)"
       ]
     },
-    [
   {
     q: "מה סמל המדינה כולל?",
     a: ["מנורה בת שבעה קנים- שני ענפי זית והמילה ישראל"],
@@ -451,7 +450,7 @@ registerExam({
 ]
 
  
-]
+
 
 
 
