@@ -57,3 +57,95 @@ input[type=checkbox],input[type=radio]{accent-color:#38bdf8}
   border: 1px solid #ccc;
   font-size: 0.85rem;
 }
+
+
+/* שאלות סדר נכון (order) */
+.order-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.order-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #334155;
+  background: #0f172a;
+  font-size: 0.9rem;
+}
+
+.order-text {
+  flex: 1;
+  margin-left: 10px;
+}
+
+.order-select {
+  min-width: 80px;
+  padding: 4px;
+  border-radius: 6px;
+  border: 1px solid #475569;
+  background: #020617;
+  color: #e5e7eb;
+}
+
+/* שאלות התאמה (match) */
+.match-container {
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.match-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.match-right {
+  flex: 1;
+  background: #020617;
+  border-radius: 12px;
+  padding: 8px 10px;
+  border: 1px solid #334155;
+  font-size: 0.85rem;
+}
+
+.match-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #334155;
+  background: #0f172a;
+  font-size: 0.9rem;
+}
+
+.match-term {
+  flex: 1;
+  margin-left: 10px;
+}
+
+.match-select {
+  min-width: 70px;
+  padding: 4px;
+  border-radius: 6px;
+  border: 1px solid #475569;
+  background: #020617;
+  color: #e5e7eb;
+}
+
+.match-legend-title {
+  font-weight: 600;
+  margin-bottom: 4px;
+  text-align: right;
+}
+
+.match-legend-line {
+  margin-bottom: 2px;
+}

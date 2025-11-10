@@ -192,7 +192,9 @@ function renderQuestion(first = false) {
   questionText.textContent = q.q;
   optionsDiv.innerHTML = '';
 
-  const isOrder = q.type === 'order';
+  const type = q.type || 'mcq';
+  const isOrder = type === 'order';
+  const isMatch = type === 'match';
 
   if (isOrder) {
     // ======= שאלה מסוג "סדר נכון" עם בחירה 1..N לכל משפט =======
@@ -236,13 +238,70 @@ function renderQuestion(first = false) {
     });
 
     optionsDiv.appendChild(list);
+  } else if (isMatch) {
+    // ======= שאלה מסוג "התאמה" (match) =======
+    const container = document.createElement('div');
+    container.className = 'match-container';
+
+    const leftCol = document.createElement('div');
+    leftCol.className = 'match-left';
+
+    const rightCol = document.createElement('div');
+    rightCol.className = 'match-right';
+
+    // צד שמאל – המילים בנדב"ר + select של אות
+    (q.pairs || []).forEach((p, i) => {
+      const row = document.createElement('div');
+      row.className = 'match-row';
+
+      const termSpan = document.createElement('span');
+      termSpan.className = 'match-term';
+      termSpan.textContent = `${i + 1}. ${p.label}`;
+
+      const select = document.createElement('select');
+      select.className = 'match-select';
+
+      const emptyOpt = document.createElement('option');
+      emptyOpt.value = '';
+      emptyOpt.textContent = 'בחר/י אות';
+      select.appendChild(emptyOpt);
+
+      (q.options || []).forEach(optDef => {
+        const opt = document.createElement('option');
+        opt.value = optDef.key;
+        opt.textContent = optDef.key;
+        select.appendChild(opt);
+      });
+
+      row.appendChild(termSpan);
+      row.appendChild(select);
+      leftCol.appendChild(row);
+    });
+
+    // צד ימין – מקרא האותיות
+    const legendTitle = document.createElement('div');
+    legendTitle.className = 'match-legend-title';
+    legendTitle.textContent = 'מקרא:';
+    rightCol.appendChild(legendTitle);
+
+    (q.options || []).forEach(optDef => {
+      const line = document.createElement('div');
+      line.className = 'match-legend-line';
+      line.textContent = `${optDef.key} – ${optDef.text}`;
+      rightCol.appendChild(line);
+    });
+
+    container.appendChild(leftCol);
+    container.appendChild(rightCol);
+    optionsDiv.appendChild(container);
   } else {
     // ======= שאלת ברירה רגילה (תשובה אחת / מרובות) =======
     const multi = Array.isArray(q.a) && q.a.length > 1;
 
     let opts = shuffledOptionsCache.get(q);
     if (!opts) {
-      opts = shuffleArray(q.options || []);
+      const base = q.options && q.options.length ? q.options : q.a;
+      opts = shuffleArray(base);
       shuffledOptionsCache.set(q, opts);
     }
 
@@ -294,9 +353,10 @@ function arraysEqualOrdered(a, b) {
 function attachGeneralHandlers() {
   submitBtn.onclick = () => {
     const q = currentSet[index];
+    const type = q.type || 'mcq';
 
     // ===== שאלה מסוג "סדר נכון" =====
-    if (q.type === 'order') {
+    if (type === 'order') {
       const list = document.getElementById('orderList');
       if (!list) {
         feedback.textContent = 'אירעה שגיאה בהצגת השאלה.';
@@ -369,7 +429,70 @@ function attachGeneralHandlers() {
       return; // חשוב: לא להמשיך ללוגיקה של שאלת ברירה
     }
 
-    // ===== מפה והלאה – שאלות רגילות (ברירה) =====
+    // ===== שאלה מסוג "התאמה" (match) =====
+    if (type === 'match') {
+      const rows = Array.from(document.querySelectorAll('.match-row'));
+      if (!rows.length) {
+        feedback.textContent = 'אירעה שגיאה בהצגת השאלה.';
+        feedback.style.color = '#f87171';
+        return;
+      }
+
+      const usedKeys = new Set();
+      let missing = false;
+      let duplicate = false;
+      let allCorrect = true;
+
+      rows.forEach((row, idx) => {
+        const select = row.querySelector('select');
+        const key = select.value;
+        if (!key) {
+          missing = true;
+          return;
+        }
+        if (usedKeys.has(key)) {
+          duplicate = true;
+        }
+        usedKeys.add(key);
+
+        const pair = (q.pairs || [])[idx];
+        if (!pair || key !== pair.correct) {
+          allCorrect = false;
+        }
+      });
+
+      if (missing) {
+        feedback.textContent = 'מלא/י אות לכל שורה לפני בדיקה.';
+        feedback.style.color = 'orange';
+        return;
+      }
+      if (duplicate) {
+        feedback.textContent = 'כל אות יכולה להופיע רק פעם אחת.';
+        feedback.style.color = 'orange';
+        return;
+      }
+
+      if (allCorrect) {
+        feedback.textContent = 'מצוין! כל ההתאמות נכונות ✅';
+        feedback.style.color = '#34d399';
+        score++;
+        setTimeout(() => {
+          index++;
+          if (index < currentSet.length) {
+            renderQuestion();
+          } else {
+            endGame();
+          }
+        }, 900);
+      } else {
+        feedback.textContent = 'חלק מההתאמות אינן נכונות, נסה/י שוב 😊';
+        feedback.style.color = '#f97316';
+      }
+
+      return;
+    }
+
+    // ===== מכאן – שאלות רגילות (ברירה) =====
     const picked = getPicked();
 
     if (!picked.length) {
