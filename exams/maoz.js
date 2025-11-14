@@ -3,38 +3,38 @@ registerExam({
   title: 'מבחן מעוז',
   mode: 'flat',
   questions: [
-  // {
-  //   type: 'match',
-  //   q: 'על פי הנדב"ר התאם את הכינוי למשמעות:',
-  //   pairs: [
-  //     { label: 'משה',         correct: 'ב' },
-  //     { label: 'דקל',         correct: 'ד' },
-  //     { label: 'אנגליה',      correct: 'ו' },
-  //     { label: 'משני',        correct: 'ז' },
-  //     { label: 'חצי כבד',     correct: 'ג' },
-  //     { label: 'אשנב',        correct: 'ח' },
-  //     { label: 'מושי מושי',   correct: 'ה' },
-  //     { label: 'מעיל',        correct: 'א' },
-  //     { label: 'חצאית דמעות', correct: 'יב' },
-  //     { label: 'הולך על 6',   correct: 'ט' },
-  //     { label: 'סוכריות',     correct: 'יא' },
-  //     { label: 'מתנה',        correct: 'י' }
-  //   ],
-  //   options: [
-  //     { key: 'א',  text: 'קצין סיוע' },
-  //     { key: 'ב',  text: 'מטווח' },
-  //     { key: 'ג',  text: 'נגמ"ש' },
-  //     { key: 'ד',  text: 'קצין הספקה' },
-  //     { key: 'ה',  text: 'משיב מיקום' },
-  //     { key: 'ו',  text: 'התחלה' },
-  //     { key: 'ז',  text: 'טלפון' },
-  //     { key: 'ח',  text: 'קצין שלישות' },
-  //     { key: 'ט',  text: 'אדם' },
-  //     { key: 'י',  text: 'מטען' },
-  //     { key: 'יא', text: 'תחמושת' },
-  //     { key: 'יב', text: 'מש"קית ת"ש' }
-  //   ]
-  // },
+  {
+    type: 'match',
+    q: 'על פי הנדב"ר התאם את הכינוי למשמעות:',
+    pairs: [
+      { label: 'משה',         correct: 'ב' },
+      { label: 'דקל',         correct: 'ד' },
+      { label: 'אנגליה',      correct: 'ו' },
+      { label: 'משני',        correct: 'ז' },
+      { label: 'חצי כבד',     correct: 'ג' },
+      { label: 'אשנב',        correct: 'ח' },
+      { label: 'מושי מושי',   correct: 'ה' },
+      { label: 'מעיל',        correct: 'א' },
+      { label: 'חצאית דמעות', correct: 'יב' },
+      { label: 'הולך על 6',   correct: 'ט' },
+      { label: 'סוכריות',     correct: 'יא' },
+      { label: 'מתנה',        correct: 'י' }
+    ],
+    options: [
+      { key: 'א',  text: 'קצין סיוע' },
+      { key: 'ב',  text: 'מטווח' },
+      { key: 'ג',  text: 'נגמ"ש' },
+      { key: 'ד',  text: 'קצין הספקה' },
+      { key: 'ה',  text: 'משיב מיקום' },
+      { key: 'ו',  text: 'התחלה' },
+      { key: 'ז',  text: 'טלפון' },
+      { key: 'ח',  text: 'קצין שלישות' },
+      { key: 'ט',  text: 'אדם' },
+      { key: 'י',  text: 'מטען' },
+      { key: 'יא', text: 'תחמושת' },
+      { key: 'יב', text: 'מש"קית ת"ש' }
+    ]
+  },
   {
     type: 'order',
     q: "סדר על פי הסדר את אופן הנחת CAT:",
